@@ -1,0 +1,129 @@
+<html>
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>Test app</title>
+</head>
+
+<body>
+	<input type='file' accept='text/plain' onchange='openFile(event)'><br>
+	<div id='fetchingInput'>
+	</div>
+	<script type="text/javascript">
+		var urlValue = 1
+		try {
+			var commonFunction = (invitedFriends, calariesInJuices, fruitJuices, calariesIntake) => {
+				var displayingResult = "";
+
+				//function to get final output 
+				var output = (resultInMap, caloriIntake, set) => {
+					var count = 0;
+					var i = 0, j = 0;
+					var finalResult = "";
+					try {
+						for (var i = 0; i < set.length; i++) {
+							if (resultInMap.get(set[i]) == caloriIntake) {
+								i++;
+							} else if (resultInMap.get(set[i]) < caloriIntake) {
+								count += resultInMap.get(set[i]);
+								finalResult += set[i];
+								j++;
+							}
+						}
+
+						//condition on calories intake by friend
+						if (count == caloriIntake) {
+							displayingResult += "<br/>" + finalResult + "( for  friend " + j + " )";
+						} else {
+							displayingResult += "<br/>" + "SORRY, YOU JUST HAVE WATER ( for  friend " + j + " )"
+						}
+						document.write(displayingResult)
+					} catch (error) {
+						return document.write(error);
+					}
+				}
+
+				//function to get unique juices and assigning value - particluar juice calories to its juices 
+				var uniqueJuices = () => {
+					try {
+						//converting string into array using split
+						var calariesInArray = calariesInJuices.split(" ");
+						var juicesInArray = fruitJuices.split("");
+
+						try {
+							//to avoid duplicates
+							var set = new Set();
+
+							//checking length
+							if (juicesInArray.length) {
+								for (var i = 0; i < juicesInArray.length; i++) {
+									set.add(juicesInArray[i]);
+								}
+							}
+							else {
+								return document.write("Please check length of juicesInArray");
+							}
+						} catch (error) {
+							return document.write(error);
+						}
+
+						//sort and converting a set into array 
+						set = Array.from(set).sort();
+						try {
+							var map = new Map();
+
+							//checking length
+							if (set.length) {
+								for (var i = 0; i < set.length; i++) {
+									map.set(set[i], parseInt(calariesInArray[i + 1]));
+								}
+							}
+							else {
+								return document.write("Please check length of Set");
+							}
+						} catch (error) {
+							return document.write(error);
+						}
+
+						//passing parameters to output function
+						output(map, parseInt(calariesIntake), set);
+					} catch (error) {
+						return document.write(error);
+					}
+				}
+				var resultInMap = uniqueJuices()
+			}
+
+			//reading file from text file
+			var openFile = (event) => {
+				var url = event.target.value.split(".")
+				if (url[urlValue] === "txt") {
+					var input = event.target;
+					var reader = new FileReader();
+					reader.onload = () => {
+						var text = reader.result;
+						var node = document.getElementById('fetchingInput');
+						node.innerText = text;
+						var a = text.split("\n").filter((str) => {
+							return /\S/.test(str);
+						});
+						var j = 0;
+						for (var i = 0; i < parseInt(a[0]); i++) {
+							commonFunction(a[0], a[j + 1], a[j + 2], a[j + 3]);
+							j = j + 3;
+						}
+					};
+					reader.readAsText(input.files[0]);
+				}
+				else {
+					return document.write("Your file extention should be .txt and your uploaded extention is ." + url[urlValue])
+				}
+
+			};
+		} catch (error) {
+			document.write(error);
+		}
+	</script>
+</body>
+
+</html>
